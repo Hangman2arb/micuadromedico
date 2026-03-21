@@ -202,7 +202,7 @@
                 {{-- Brand --}}
                 <div class="lg:col-span-1">
                     <a href="{{ route('home') }}" class="flex items-center gap-2.5 mb-4">
-                        <img src="{{ asset('logo.svg') }}" alt="Mi Cuadro Médico" class="h-8 w-auto" width="32" height="32">
+                        <img src="{{ asset('logo-white.svg') }}" alt="Mi Cuadro Médico" class="h-8 w-auto" width="32" height="32">
                         <span class="text-lg font-bold text-white">Mi Cuadro Médico</span>
                     </a>
                     <p class="text-sm text-gray-400 leading-relaxed">

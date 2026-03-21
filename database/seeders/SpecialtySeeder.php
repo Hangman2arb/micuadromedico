@@ -15,7 +15,7 @@ class SpecialtySeeder extends Seeder
     public function run(): void
     {
         $specialties = [
-            // ─── Categoría: Médica (38 specialties) ───
+            // ─── Categoría: Médica (48 specialties) ───
             ['name' => 'Alergología', 'category' => 'medica', 'sort_order' => 1],
             ['name' => 'Anestesiología', 'category' => 'medica', 'sort_order' => 2],
             ['name' => 'Angiología y Cirugía Vascular', 'category' => 'medica', 'sort_order' => 3],
@@ -54,6 +54,16 @@ class SpecialtySeeder extends Seeder
             ['name' => 'Traumatología', 'category' => 'medica', 'sort_order' => 36],
             ['name' => 'Unidad del Dolor', 'category' => 'medica', 'sort_order' => 37],
             ['name' => 'Urología', 'category' => 'medica', 'sort_order' => 38],
+            ['name' => 'Podología', 'category' => 'medica', 'sort_order' => 39],
+            ['name' => 'Logopedia', 'category' => 'medica', 'sort_order' => 40],
+            ['name' => 'Andrología', 'category' => 'medica', 'sort_order' => 41],
+            ['name' => 'Proctología', 'category' => 'medica', 'sort_order' => 42],
+            ['name' => 'Rehabilitación', 'category' => 'medica', 'sort_order' => 43],
+            ['name' => 'Mastología', 'category' => 'medica', 'sort_order' => 44],
+            ['name' => 'Acupuntura', 'category' => 'medica', 'sort_order' => 45],
+            ['name' => 'Ozonoterapia', 'category' => 'medica', 'sort_order' => 46],
+            ['name' => 'Nutrición y Dietética', 'category' => 'medica', 'sort_order' => 47],
+            ['name' => 'Medicina del Trabajo', 'category' => 'medica', 'sort_order' => 48],
 
             // ─── Categoría: Dental (7 specialties) ───
             ['name' => 'Odontología General', 'category' => 'dental', 'sort_order' => 1],
@@ -64,7 +74,7 @@ class SpecialtySeeder extends Seeder
             ['name' => 'Cirugía Oral', 'category' => 'dental', 'sort_order' => 6],
             ['name' => 'Estética Dental', 'category' => 'dental', 'sort_order' => 7],
 
-            // ─── Categoría: Pruebas diagnósticas (11 specialties) ───
+            // ─── Categoría: Pruebas diagnósticas (18 specialties) ───
             ['name' => 'Análisis Clínicos', 'category' => 'pruebas', 'sort_order' => 1],
             ['name' => 'Radiología General', 'category' => 'pruebas', 'sort_order' => 2],
             ['name' => 'Diagnóstico por Imagen', 'category' => 'pruebas', 'sort_order' => 3],
@@ -76,6 +86,13 @@ class SpecialtySeeder extends Seeder
             ['name' => 'TAC', 'category' => 'pruebas', 'sort_order' => 9],
             ['name' => 'Medicina Nuclear PET-TAC', 'category' => 'pruebas', 'sort_order' => 10],
             ['name' => 'Pruebas Genéticas', 'category' => 'pruebas', 'sort_order' => 11],
+            ['name' => 'Ecografía', 'category' => 'pruebas', 'sort_order' => 12],
+            ['name' => 'Mamografía', 'category' => 'pruebas', 'sort_order' => 13],
+            ['name' => 'Endoscopia', 'category' => 'pruebas', 'sort_order' => 14],
+            ['name' => 'Ecocardiograma', 'category' => 'pruebas', 'sort_order' => 15],
+            ['name' => 'Holter', 'category' => 'pruebas', 'sort_order' => 16],
+            ['name' => 'Polisomnografía', 'category' => 'pruebas', 'sort_order' => 17],
+            ['name' => 'Colonoscopia', 'category' => 'pruebas', 'sort_order' => 18],
         ];
 
         $now = now();
