@@ -40,6 +40,11 @@ Route::get('/especialidades/{slug}', [SpecialtyController::class, 'show'])->name
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
+// Insurer + Special Group pages (e.g., /adeslas/muface)
+Route::get('/{insurerSlug}/muface', [InsurerController::class, 'specialGroup'])->name('insurer.muface')->defaults('groupSlug', 'muface');
+Route::get('/{insurerSlug}/mugeju', [InsurerController::class, 'specialGroup'])->name('insurer.mugeju')->defaults('groupSlug', 'mugeju');
+Route::get('/{insurerSlug}/isfas', [InsurerController::class, 'specialGroup'])->name('insurer.isfas')->defaults('groupSlug', 'isfas');
+
 // Insurer pages (must be last - catch-all slug patterns)
 Route::get('/{insurer}', [InsurerController::class, 'show'])->name('insurer.show');
 Route::get('/{insurer}/{province}', [InsurerController::class, 'province'])->name('insurer.province');

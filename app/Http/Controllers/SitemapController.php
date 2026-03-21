@@ -66,6 +66,23 @@ class SitemapController extends Controller
             ];
         }
 
+        // Insurer + Special Group pages (e.g., /adeslas/muface)
+        $insurerSpecialGroups = \DB::table('insurer_special_group')
+            ->join('insurers', 'insurers.id', '=', 'insurer_special_group.insurer_id')
+            ->join('special_groups', 'special_groups.id', '=', 'insurer_special_group.special_group_id')
+            ->where('insurers.is_active', true)
+            ->select('insurers.slug as insurer_slug', 'special_groups.slug as group_slug', 'insurers.updated_at')
+            ->get();
+
+        foreach ($insurerSpecialGroups as $isg) {
+            $urls[] = [
+                'loc' => url("/{$isg->insurer_slug}/{$isg->group_slug}"),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.7',
+            ];
+        }
+
         // Province landing pages
         $provinces = Province::orderBy('name')->get();
         foreach ($provinces as $province) {

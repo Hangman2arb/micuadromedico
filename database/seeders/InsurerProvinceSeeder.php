@@ -19,40 +19,13 @@ class InsurerProvinceSeeder extends Seeder
         $now = now();
         $rows = 0;
 
-        // Top 5 insurers get all 56 specialties
-        $topSlugs = ['adeslas', 'sanitas', 'asisa', 'dkv', 'mapfre'];
-        // Medium insurers (sort_order 6-15) get 35-45
-        // Small insurers (sort_order 16+) get 20-30
-
         $localities = $this->getLocalitiesByProvince();
+        $specialtyMap = $this->getSpecialtiesByInsurer();
 
         foreach ($insurers as $insurer) {
-            // Determine specialty count based on tier
-            if (in_array($insurer->slug, $topSlugs)) {
-                $specialtyCount = count($allSpecialties); // All 56
-            } elseif ($insurer->sort_order <= 15) {
-                $specialtyCount = rand(35, 45);
-            } else {
-                $specialtyCount = rand(20, 30);
-            }
-
-            // Shuffle and pick specialties (always include core ones)
-            $coreSpecialties = [
-                'Medicina de Familia', 'Pediatría', 'Ginecología y Obstetricia',
-                'Traumatología', 'Dermatología', 'Oftalmología', 'Cardiología',
-                'Otorrinolaringología', 'Urología', 'Análisis Clínicos',
-                'Radiología General', 'Odontología General',
-            ];
-
-            if ($specialtyCount >= count($allSpecialties)) {
-                $selectedSpecialties = $allSpecialties;
-            } else {
-                $remaining = array_diff($allSpecialties, $coreSpecialties);
-                shuffle($remaining);
-                $extra = array_slice($remaining, 0, max(0, $specialtyCount - count($coreSpecialties)));
-                $selectedSpecialties = array_merge($coreSpecialties, $extra);
-                sort($selectedSpecialties);
-            }
+            // Get real specialties for this insurer (or fallback to standard medical set)
+            $selectedSpecialties = $specialtyMap[$insurer->slug] ?? $specialtyMap['_default'];
+            sort($selectedSpecialties);
 
             foreach ($provinces as $province) {
                 $pdfUrl = $this->buildPdfUrl($insurer, $province);
@@ -122,6 +95,124 @@ class InsurerProvinceSeeder extends Seeder
         ];
 
         return $officialUrls[$insurer->slug] ?? null;
+    }
+
+    /**
+     * Realistic specialty mapping per insurer based on their actual cuadro médico.
+     * - Top 5 (Adeslas, Sanitas, Asisa, DKV, Mapfre): full medical + dental + diagnostic coverage
+     * - Medium national insurers: full medical + basic diagnostic, no niche therapies
+     * - Small/regional: standard medical, limited diagnostics
+     * - Dental-only specialties only for insurers with dental products
+     * - Niche (acupuntura, ozonoterapia) only for insurers known to cover them
+     */
+    private function getSpecialtiesByInsurer(): array
+    {
+        // Core medical specialties every health insurer covers
+        $coreMedical = [
+            'Alergología', 'Aparato Digestivo', 'Cardiología', 'Cirugía General',
+            'Dermatología', 'Endocrinología', 'Ginecología y Obstetricia',
+            'Medicina de Familia', 'Medicina Interna', 'Nefrología', 'Neumología',
+            'Neurología', 'Oftalmología', 'Otorrinolaringología', 'Pediatría',
+            'Psicología', 'Reumatología', 'Traumatología', 'Urología',
+        ];
+
+        // Extended medical (large/medium insurers)
+        $extendedMedical = array_merge($coreMedical, [
+            'Anestesiología', 'Angiología y Cirugía Vascular', 'Cirugía Cardiovascular',
+            'Cirugía Maxilofacial', 'Cirugía Pediátrica', 'Cirugía Plástica',
+            'Cirugía Torácica', 'Geriatría', 'Hematología', 'Medicina Intensiva',
+            'Neurocirugía', 'Oncología', 'Oncología Radioterápica', 'Psiquiatría',
+            'Reproducción Asistida', 'Rehabilitación', 'Logopedia',
+            'Nutrición y Dietética', 'Podología',
+        ]);
+
+        // Full medical (top 5 only - includes niche)
+        $fullMedical = array_merge($extendedMedical, [
+            'Medicina del Sueño', 'Medicina Estética', 'Medicina Regenerativa',
+            'Unidad del Dolor', 'Andrología', 'Proctología', 'Mastología',
+            'Acupuntura', 'Medicina del Trabajo',
+        ]);
+
+        // Dental specialties
+        $dental = [
+            'Odontología General', 'Ortodoncia', 'Endodoncia', 'Periodoncia',
+            'Implantología', 'Cirugía Oral', 'Estética Dental',
+        ];
+
+        // Diagnostic tests - basic
+        $basicDiag = [
+            'Análisis Clínicos', 'Radiología General', 'Electrocardiografía',
+            'Ecografía', 'Mamografía',
+        ];
+
+        // Diagnostic tests - full
+        $fullDiag = array_merge($basicDiag, [
+            'Diagnóstico por Imagen', 'Doppler Cardíaco', 'Electroencefalografía',
+            'Electromiografía', 'Resonancia Magnética', 'TAC',
+            'Medicina Nuclear PET-TAC', 'Pruebas Genéticas', 'Endoscopia',
+            'Ecocardiograma', 'Holter', 'Polisomnografía', 'Colonoscopia',
+        ]);
+
+        // Medium diagnostics
+        $medDiag = array_merge($basicDiag, [
+            'Diagnóstico por Imagen', 'Resonancia Magnética', 'TAC',
+            'Endoscopia', 'Ecocardiograma', 'Holter', 'Colonoscopia',
+        ]);
+
+        return [
+            // ── Top 5: All specialties ──
+            'adeslas'    => array_merge($fullMedical, $dental, $fullDiag),
+            'sanitas'    => array_merge($fullMedical, $dental, $fullDiag),
+            'asisa'      => array_merge($fullMedical, $dental, $fullDiag),
+            'dkv'        => array_merge($fullMedical, $dental, $fullDiag),
+            'mapfre'     => array_merge($fullMedical, $dental, $fullDiag),
+
+            // ── Large national insurers: extended + dental + full diagnostics ──
+            'axa'        => array_merge($extendedMedical, $dental, $fullDiag),
+            'generali'   => array_merge($extendedMedical, $dental, $fullDiag),
+            'allianz'    => array_merge($extendedMedical, $dental, $fullDiag),
+            'cigna'      => array_merge($extendedMedical, $dental, $fullDiag),
+            'zurich'     => array_merge($extendedMedical, $dental, $fullDiag),
+            'caser'      => array_merge($extendedMedical, $dental, $fullDiag),
+            'vivaz'      => array_merge($extendedMedical, $dental, $medDiag),
+
+            // ── Medium national: extended + medium diagnostics (no dental unless they have it) ──
+            'aegon'              => array_merge($extendedMedical, $medDiag),
+            'catalana-occidente' => array_merge($extendedMedical, $medDiag),
+            'nortehispana'       => array_merge($extendedMedical, $medDiag),
+            'plus-ultra'         => array_merge($extendedMedical, $medDiag),
+            'seguros-bilbao'     => array_merge($extendedMedical, $medDiag),
+            'nectar'             => array_merge($extendedMedical, $dental, $medDiag),
+
+            // ── Regional/specialist insurers: core + some extended ──
+            'fiatc'                  => array_merge($extendedMedical, $dental, $medDiag),
+            'acunsa'                 => array_merge($extendedMedical, $fullDiag), // Clínica Univ. Navarra
+            'imq'                    => array_merge($extendedMedical, $dental, $medDiag),
+            'imq-asturias'           => array_merge($extendedMedical, $dental, $medDiag),
+            'divina-pastora'         => array_merge($extendedMedical, $dental, $medDiag),
+            'agrupacio-mutua'        => array_merge($extendedMedical, $medDiag),
+            'previsora-general'      => array_merge($coreMedical, $dental, $basicDiag),
+            'igualatorio-cantabria'  => array_merge($extendedMedical, $dental, $medDiag),
+
+            // ── Professional/niche mutuals ──
+            'hna'  => array_merge($extendedMedical, $dental, $medDiag), // Architects
+            'musa' => array_merge($extendedMedical, $dental, $medDiag), // Architects
+            'psn'  => array_merge($extendedMedical, $dental, $fullDiag), // Healthcare pros
+
+            // ── Small/basic insurers ──
+            'asefa'                => array_merge($coreMedical, $basicDiag),
+            'antares'              => array_merge($coreMedical, $dental, $basicDiag),
+            'cosalud'              => array_merge($coreMedical, $basicDiag),
+            'union-madrilena'      => array_merge($coreMedical, $dental, $basicDiag),
+
+            // ── Sub-brands (inherit parent's coverage) ──
+            'dkv-la-fuencisla'   => array_merge($fullMedical, $dental, $fullDiag), // DKV brand
+            'aegon-la-sanitaria' => array_merge($extendedMedical, $medDiag),       // Aegon brand
+            'aegon-labor-medica' => array_merge($coreMedical, ['Medicina del Trabajo'], $basicDiag),
+
+            // ── Default fallback ──
+            '_default' => array_merge($coreMedical, $basicDiag),
+        ];
     }
 
     /**

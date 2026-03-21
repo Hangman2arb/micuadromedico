@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Insurer;
 use App\Models\Province;
+use App\Models\SpecialGroup;
 use App\Models\Specialty;
 use Illuminate\View\View;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -141,6 +142,72 @@ class InsurerController extends Controller
             'metaTitle' => $metaTitle,
             'metaDescription' => $metaDescription,
             'canonicalUrl' => route('insurer.province', [$insurer->slug, $province->slug]),
+        ]);
+    }
+
+    /**
+     * Display insurer + special group page (e.g., Adeslas MUFACE).
+     */
+    public function specialGroup(string $insurerSlug, string $groupSlug): View
+    {
+        $insurer = Insurer::where('slug', $insurerSlug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $group = SpecialGroup::where('slug', $groupSlug)->firstOrFail();
+
+        // Verify this insurer is concertada with this group
+        $isConcertada = $insurer->specialGroups()->where('special_groups.id', $group->id)->exists();
+        if (! $isConcertada) {
+            abort(404);
+        }
+
+        // Load insurer data
+        $insurer->load([
+            'products' => fn ($q) => $q->where('is_active', true),
+            'faqs' => fn ($q) => $q->orderBy('sort_order'),
+        ]);
+
+        // Get provinces for sidebar
+        $provinces = $insurer->provinces()->orderBy('name')->get();
+
+        // Other concertada insurers for this group
+        $otherInsurers = $group->insurers()
+            ->where('is_active', true)
+            ->where('insurers.id', '!=', $insurer->id)
+            ->orderBy('sort_order')
+            ->get();
+
+        $faqs = $insurer->faqs->map(fn ($f) => [
+            'question' => $f->question,
+            'answer' => $f->answer,
+        ])->toArray();
+
+        $groupNames = [
+            'muface' => 'MUFACE',
+            'mugeju' => 'MUGEJU',
+            'isfas' => 'ISFAS',
+        ];
+        $groupFullNames = [
+            'muface' => 'Mutualidad General de Funcionarios Civiles del Estado',
+            'mugeju' => 'Mutualidad General Judicial',
+            'isfas' => 'Instituto Social de las Fuerzas Armadas',
+        ];
+
+        $year = date('Y');
+        $groupName = $groupNames[$groupSlug] ?? $group->name;
+
+        return view('insurer.special-group', [
+            'insurer' => $insurer,
+            'group' => $group,
+            'groupName' => $groupName,
+            'groupFullName' => $groupFullNames[$groupSlug] ?? $group->name,
+            'provinces' => $provinces,
+            'otherInsurers' => $otherInsurers,
+            'faqs' => $faqs,
+            'metaTitle' => "Cuadro Médico {$insurer->name} {$groupName} {$year} — Funcionarios",
+            'metaDescription' => "Cuadro médico de {$insurer->name} para {$groupName} ({$groupFullNames[$groupSlug]}) en {$year}. Consulta médicos, especialidades y coberturas para funcionarios.",
+            'canonicalUrl' => url("/{$insurer->slug}/{$groupSlug}"),
         ]);
     }
 }
