@@ -1,35 +1,49 @@
-name: Deploy micuadromedico
+name: Deploy to Hetzner
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
+    name: Deploy to production
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy via rsync
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_USER: ${{ secrets.SSH_USER }}
-          SOURCE: "."
-          TARGET: "/var/www/micuadromedico"
-          EXCLUDE: ".git, node_modules, .env, storage/logs/*, storage/framework/sessions/*, database/database.sqlite"
+        run: |
+          rsync -avz --delete \
+            --exclude='.git*' \
+            --exclude='node_modules' \
+            --exclude='scripts/' \
+            --exclude='.github/' \
+            --exclude='CLAUDE.md' \
+            --exclude='storage/' \
+            --exclude='vendor/' \
+            --exclude='.env' \
+            --exclude='database/database.sqlite' \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/micuadromedico/
 
-      - name: Post-deploy commands
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
+      - name: Post-deploy
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} '
             cd /var/www/micuadromedico
-            composer install --no-dev --no-interaction --optimize-autoloader
-            php artisan migrate --force
+            composer install --no-dev --optimize-autoloader --no-interaction
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            php artisan migrate --force
+          '
