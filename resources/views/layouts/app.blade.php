@@ -286,6 +286,19 @@
         </div>
     </div>
 
+    {{-- Google Analytics — loads ONLY after cookie consent --}}
+    <template x-if="cookieConsent">
+        <div>
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-NH1NTPRH0Q"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-NH1NTPRH0Q');
+            </script>
+        </div>
+    </template>
+
     @yield('scripts')
 </body>
 </html>
