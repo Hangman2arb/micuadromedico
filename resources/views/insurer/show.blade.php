@@ -209,11 +209,11 @@
                         <li>
                             <a href="{{ route('insurer.show', $other->slug) }}"
                                class="flex items-center gap-3 py-2 px-3 -mx-3 rounded-lg hover:bg-gray-50 transition-colors group">
-                                @php $otherInitial = mb_strtoupper(mb_substr($other->name, 0, 1)); @endphp
-                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"
-                                     style="background-color: {{ $other->brand_color ?? '#1d5fa7' }}">
-                                    {{ $otherInitial }}
-                                </div>
+                                @if($other->logo)
+                                    <img src="{{ asset($other->logo) }}" alt="{{ $other->name }}" class="w-8 h-8 rounded-lg object-contain bg-white border border-gray-100 p-0.5 shrink-0" width="32" height="32" loading="lazy">
+                                @else
+                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0" style="background-color: {{ $other->brand_color ?? '#1d5fa7' }}">{{ mb_strtoupper(mb_substr($other->name, 0, 1)) }}</div>
+                                @endif
                                 <span class="text-sm text-gray-600 group-hover:text-primary transition-colors">{{ $other->name }}</span>
                             </a>
                         </li>

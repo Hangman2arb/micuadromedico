@@ -36,6 +36,14 @@ class Insurer extends Model
     }
 
     /**
+     * Accessor: $insurer->logo (alias for logo_url, used in all Blade templates).
+     */
+    public function getLogoAttribute(): ?string
+    {
+        return $this->logo_url;
+    }
+
+    /**
      * Products (plans) offered by this insurer.
      */
     public function products(): HasMany

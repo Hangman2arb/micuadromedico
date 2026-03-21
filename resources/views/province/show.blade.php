@@ -82,9 +82,11 @@
                     <a href="{{ route('insurer.province', [$insurer->slug, $province->slug]) }}"
                        class="group block bg-white rounded-xl border border-gray-200 p-5 hover:border-primary/30 hover:shadow-md transition-all">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg font-bold shrink-0" style="background-color: {{ $iColor }}">
-                                {{ $iInitial }}
-                            </div>
+                            @if($insurer->logo)
+                                <img src="{{ asset($insurer->logo) }}" alt="{{ $insurer->name }}" class="w-12 h-12 rounded-xl object-contain bg-white border border-gray-100 p-1 shrink-0" width="48" height="48" loading="lazy">
+                            @else
+                                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg font-bold shrink-0" style="background-color: {{ $iColor }}">{{ $iInitial }}</div>
+                            @endif
                             <div class="flex-1 min-w-0">
                                 <h3 class="font-bold text-ink group-hover:text-primary transition-colors">{{ $insurer->name }}</h3>
                                 <div class="flex items-center gap-4 mt-1 text-xs text-gray-400">
