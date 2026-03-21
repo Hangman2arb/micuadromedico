@@ -88,6 +88,55 @@
         .accordion-content.open {
             max-height: 2000px;
         }
+
+        /* Editorial content — better readability */
+        .prose h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0a0f14;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #1d5fa715;
+        }
+        .prose h3::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 1.2em;
+            background-color: #1d5fa7;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        .prose h3:first-child { margin-top: 0; }
+
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #374151;
+        }
+
+        .prose ul {
+            margin: 1rem 0;
+            padding-left: 0;
+            list-style: none;
+        }
+        .prose ul li {
+            position: relative;
+            padding: 0.75rem 1rem 0.75rem 1.5rem;
+            margin-bottom: 0.5rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            border-left: 3px solid #1d5fa7;
+            line-height: 1.6;
+            color: #374151;
+        }
+        .prose ul li strong {
+            color: #0a0f14;
+        }
     </style>
 
     {{-- Organization Schema --}}
