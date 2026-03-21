@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Insurer;
 use App\Models\Province;
+use App\Models\Specialty;
 use Illuminate\View\View;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -24,6 +25,24 @@ class InsurerController extends Controller
             'faqs' => fn ($query) => $query->orderBy('sort_order'),
         ]);
 
+        $products = $insurer->products;
+
+        // Group provinces by autonomous community for the region grid
+        $provincesByRegion = $insurer->provinces->groupBy('autonomous_community');
+
+        // Convert FAQs to array format for the accordion component
+        $faqs = $insurer->faqs->map(fn ($f) => [
+            'question' => $f->question,
+            'answer' => $f->answer,
+        ])->toArray();
+
+        // Other insurers for sidebar
+        $otherInsurers = Insurer::where('is_active', true)
+            ->where('id', '!=', $insurer->id)
+            ->orderBy('sort_order')
+            ->limit(10)
+            ->get();
+
         $allProvinces = Province::orderBy('name')->get();
 
         $metaTitle = $insurer->meta_title
@@ -33,6 +52,11 @@ class InsurerController extends Controller
 
         return view('insurer.show', [
             'insurer' => $insurer,
+            'products' => $products,
+            'provinces' => $insurer->provinces,
+            'provincesByRegion' => $provincesByRegion,
+            'faqs' => $faqs,
+            'otherInsurers' => $otherInsurers,
             'allProvinces' => $allProvinces,
             'metaTitle' => $metaTitle,
             'metaDescription' => $metaDescription,
@@ -57,26 +81,63 @@ class InsurerController extends Controller
             ->where('provinces.id', $province->id)
             ->first();
 
+        $pivotData = $insurerProvince?->pivot;
+
         // Load FAQs for the insurer
         $insurer->load([
             'faqs' => fn ($query) => $query->orderBy('sort_order'),
         ]);
 
-        // Get all provinces (show all, even without pivot data)
-        $allProvinces = Province::orderBy('name')->get();
+        // Convert FAQs to array format
+        $faqs = $insurer->faqs->map(fn ($f) => [
+            'question' => $f->question,
+            'answer' => $f->answer,
+        ])->toArray();
 
-        $pivotData = $insurerProvince?->pivot;
+        // PDF URL from pivot data
+        $pdfUrl = $pivotData?->pdf_url;
 
-        $metaTitle = $pivotData->meta_title
+        // Specialties: from pivot JSON if available, otherwise all specialties as fallback
+        $specialtiesAvailable = $pivotData?->specialties_available ?? [];
+        if (! empty($specialtiesAvailable)) {
+            $specialties = Specialty::whereIn('name', $specialtiesAvailable)
+                ->orderBy('category')
+                ->orderBy('sort_order')
+                ->get();
+        } else {
+            $specialties = Specialty::orderBy('category')
+                ->orderBy('sort_order')
+                ->get();
+        }
+
+        // Localities from pivot JSON
+        $localitiesRaw = $pivotData?->localities_covered ?? [];
+        $localities = collect($localitiesRaw)->map(fn ($name) => (object) ['name' => $name]);
+
+        // Compatible products for this insurer
+        $compatibleProducts = $insurer->products()
+            ->where('is_active', true)
+            ->get();
+
+        // Other provinces for sidebar
+        $otherProvinces = Province::orderBy('name')->get();
+
+        $metaTitle = $pivotData?->meta_title
             ?? "Cuadro Médico {$insurer->name} en {$province->name}";
-        $metaDescription = $pivotData->meta_description
+        $metaDescription = $pivotData?->meta_description
             ?? "Cuadro médico de {$insurer->name} en {$province->name}. Consulta especialistas, centros médicos, hospitales y localidades con cobertura.";
 
         return view('insurer.province', [
             'insurer' => $insurer,
             'province' => $province,
             'pivotData' => $pivotData,
-            'insurerProvinces' => $allProvinces,
+            'pdfUrl' => $pdfUrl,
+            'specialties' => $specialties,
+            'localities' => $localities,
+            'compatibleProducts' => $compatibleProducts,
+            'faqs' => $faqs,
+            'otherProvinces' => $otherProvinces,
+            'insurerProvinces' => $otherProvinces,
             'metaTitle' => $metaTitle,
             'metaDescription' => $metaDescription,
             'canonicalUrl' => route('insurer.province', [$insurer->slug, $province->slug]),

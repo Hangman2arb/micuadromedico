@@ -25,6 +25,13 @@ class SpecialGroupController extends Controller
             'faqs' => fn ($query) => $query->orderBy('sort_order'),
         ]);
 
+        // Pass as standalone variables — the view checks isset($insurers) / isset($faqs)
+        $insurers = $specialGroup->insurers;
+        $faqs = $specialGroup->faqs->map(fn ($f) => [
+            'question' => $f->question,
+            'answer' => $f->answer,
+        ])->toArray();
+
         $metaTitle = $specialGroup->meta_title
             ?? "Cuadro Médico {$specialGroup->name} - Aseguradoras y coberturas";
         $metaDescription = $specialGroup->meta_description
@@ -32,6 +39,8 @@ class SpecialGroupController extends Controller
 
         return view('special-group.show', [
             'specialGroup' => $specialGroup,
+            'insurers' => $insurers,
+            'faqs' => $faqs,
             'metaTitle' => $metaTitle,
             'metaDescription' => $metaDescription,
             'canonicalUrl' => url("/{$slug}"),

@@ -237,7 +237,7 @@
     {{-- FAQ --}}
     @include('components.faq-accordion', [
         'title' => "Preguntas Frecuentes sobre {$meta['full_name']}",
-        'faqs' => $faqs ?? [
+        'faqs' => !empty($faqs) ? $faqs : [
             [
                 'question' => "¿Puedo elegir entre sanidad pública y privada con {$meta['full_name']}?",
                 'answer' => "Sí, los mutualistas de {$meta['full_name']} pueden elegir entre recibir asistencia sanitaria a través del sistema público de salud (Seguridad Social) o mediante una aseguradora privada concertada. Esta elección se realiza al incorporarse como mutualista y puede modificarse en períodos específicos."

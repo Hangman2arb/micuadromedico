@@ -28,3 +28,4 @@ config/cloudflare.json
 Homestead.json
 Homestead.yaml
 Thumbs.db
+/storage/batch/
