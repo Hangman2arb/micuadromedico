@@ -75,6 +75,10 @@ class Insurer extends Model
 
     /**
      * Special groups (MUFACE, MUGEJU, ISFAS) this insurer participates in.
+    }
+
+    /**
+     * Special groups (MUFACE, MUGEJU, ISFAS) this insurer participates in.
      */
     public function specialGroups(): BelongsToMany
     {
