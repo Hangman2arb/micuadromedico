@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InsurerController;
+use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SpecialGroupController;
+use App\Http\Controllers\SpecialtyController;
 use Illuminate\Support\Facades\Route;
 
 // Home - list all insurers
@@ -26,6 +28,14 @@ Route::get('/contacto', fn () => view('pages.contact', [
     'metaDescription' => 'Contacta con nosotros para cualquier consulta sobre cuadros médicos de aseguradoras en España.',
     'canonicalUrl' => route('contact'),
 ]))->name('contact');
+
+// Province pages
+Route::get('/provincias', [ProvinceController::class, 'index'])->name('province.index');
+Route::get('/provincias/{slug}', [ProvinceController::class, 'show'])->name('province.show');
+
+// Specialty pages
+Route::get('/especialidades', [SpecialtyController::class, 'index'])->name('specialty.index');
+Route::get('/especialidades/{slug}', [SpecialtyController::class, 'show'])->name('specialty.show');
 
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');

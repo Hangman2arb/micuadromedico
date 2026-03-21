@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Insurer;
 use App\Models\InsurerProvince;
+use App\Models\Province;
+use App\Models\Specialty;
 use App\Models\SpecialGroup;
 use Illuminate\Http\Response;
 
@@ -63,6 +65,44 @@ class SitemapController extends Controller
                 'priority' => '0.7',
             ];
         }
+
+        // Province landing pages
+        $provinces = Province::orderBy('name')->get();
+        foreach ($provinces as $province) {
+            $urls[] = [
+                'loc' => url("/provincias/{$province->slug}"),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.7',
+            ];
+        }
+
+        // Province index
+        $urls[] = [
+            'loc' => url('/provincias'),
+            'lastmod' => now()->toDateString(),
+            'changefreq' => 'weekly',
+            'priority' => '0.8',
+        ];
+
+        // Specialty pages
+        $specialties = Specialty::orderBy('name')->get();
+        foreach ($specialties as $specialty) {
+            $urls[] = [
+                'loc' => url("/especialidades/{$specialty->slug}"),
+                'lastmod' => now()->toDateString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.6',
+            ];
+        }
+
+        // Specialty index
+        $urls[] = [
+            'loc' => url('/especialidades'),
+            'lastmod' => now()->toDateString(),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ];
 
         // Static pages
         $staticPages = [
