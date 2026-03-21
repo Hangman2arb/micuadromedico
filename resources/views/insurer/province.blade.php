@@ -304,7 +304,7 @@
                     <p class="text-sm text-green-100 mb-4 leading-relaxed">
                         Encuentra las mejores ofertas de seguros de salud en tu provincia.
                     </p>
-                    <a href="https://tupolizadesalud.com/?utm_source=micuadromedico&utm_medium=sidebar&utm_content={{ $insurer->slug }}-{{ $province->slug }}" target="_blank" rel="noopener"
+                    <a href="https://tupolizadesalud.com/comparador-seguros/?utm_source=micuadromedico&utm_medium=sidebar&utm_content={{ $insurer->slug }}-{{ $province->slug }}" target="_blank" rel="noopener"
                        class="block w-full text-center px-4 py-2.5 bg-white text-accent font-semibold text-sm rounded-lg hover:bg-gray-50 transition-colors">
                         Comparar precios
                     </a>

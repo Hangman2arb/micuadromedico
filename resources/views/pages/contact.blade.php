@@ -132,7 +132,7 @@
                 <h3 class="font-semibold text-ink text-sm mb-1">Nota importante</h3>
                 <p class="text-sm text-gray-600 leading-relaxed">
                     micuadromedico.es es un directorio informativo independiente. Para consultas sobre tu póliza, coberturas o trámites, contacta directamente con tu aseguradora. Si buscas contratar un seguro de salud, puedes
-                    <a href="https://tupolizadesalud.com/?utm_source=micuadromedico&utm_medium=contact" target="_blank" rel="noopener" class="text-primary font-medium hover:underline">comparar precios en Tu Póliza de Salud</a>.
+                    <a href="https://tupolizadesalud.com/comparador-seguros/?utm_source=micuadromedico&utm_medium=contact" target="_blank" rel="noopener" class="text-primary font-medium hover:underline">comparar precios en Tu Póliza de Salud</a>.
                 </p>
             </div>
         </div>

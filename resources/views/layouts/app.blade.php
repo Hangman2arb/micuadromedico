@@ -141,7 +141,7 @@
                         ISFAS
                     </a>
                     @endif
-                    <a href="https://tupolizadesalud.com/?utm_source=micuadromedico&utm_medium=nav" target="_blank" rel="noopener"
+                    <a href="https://tupolizadesalud.com/comparador-seguros/?utm_source=micuadromedico&utm_medium=nav" target="_blank" rel="noopener"
                        class="ml-2 px-4 py-2 text-sm font-semibold text-white bg-accent hover:bg-accent-dark rounded-lg transition-colors">
                         <i class="fa-solid fa-arrow-right-arrow-left mr-1.5 text-xs"></i>Compara Seguros
                     </a>
@@ -171,7 +171,7 @@
             <a href="{{ route('special-group.isfas') }}" class="block py-2.5 text-gray-700 font-medium hover:text-primary">ISFAS</a>
             @endif
             <div class="pt-2 mt-2 border-t border-gray-100">
-                <a href="https://tupolizadesalud.com/?utm_source=micuadromedico&utm_medium=nav" target="_blank" rel="noopener"
+                <a href="https://tupolizadesalud.com/comparador-seguros/?utm_source=micuadromedico&utm_medium=nav" target="_blank" rel="noopener"
                    class="block w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-accent rounded-lg">
                     <i class="fa-solid fa-arrow-right-arrow-left mr-1.5"></i>Compara Seguros
                 </a>
@@ -237,7 +237,7 @@
                     <p class="text-sm text-gray-400 mb-4">
                         ¿Buscas un seguro de salud? Compara precios y coberturas de las principales aseguradoras.
                     </p>
-                    <a href="https://tupolizadesalud.com/?utm_source=micuadromedico&utm_medium=footer" target="_blank" rel="noopener"
+                    <a href="https://tupolizadesalud.com/comparador-seguros/?utm_source=micuadromedico&utm_medium=footer" target="_blank" rel="noopener"
                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-accent hover:bg-accent-dark text-white text-sm font-semibold rounded-lg transition-colors">
                         Compara en Tu Póliza de Salud
                         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
@@ -249,7 +249,7 @@
             <div class="border-t border-gray-800 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
                 <p class="text-xs text-gray-500">
                     &copy; {{ date('Y') }} micuadromedico.es &mdash; Un proyecto de
-                    <a href="https://tupolizadesalud.com/?utm_source=micuadromedico&utm_medium=footer_copy" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition-colors">Tu Póliza de Salud</a>
+                    <a href="https://tupolizadesalud.com/comparador-seguros/?utm_source=micuadromedico&utm_medium=footer_copy" target="_blank" rel="noopener" class="text-gray-400 hover:text-white transition-colors">Tu Póliza de Salud</a>
                 </p>
                 <p class="text-xs text-gray-500">
                     Los cuadros médicos se actualizan periódicamente. Consulta con tu aseguradora para información oficial.

@@ -41,7 +41,7 @@
                     @endif
                 </p>
 
-                <a href="https://tupolizadesalud.com/?{{ $utm }}" target="_blank" rel="noopener"
+                <a href="https://tupolizadesalud.com/comparador-seguros/?{{ $utm }}" target="_blank" rel="noopener"
                    class="inline-flex items-center gap-2.5 px-7 py-3.5 bg-accent hover:bg-accent-dark text-white font-bold rounded-xl shadow-lg shadow-black/20 hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5">
                     Comparar seguros de salud
                     <i class="fa-solid fa-arrow-right text-sm"></i>
