@@ -67,6 +67,7 @@ class Insurer extends Model
                 'meta_title',
                 'meta_description',
                 'province_faqs',
+                'content_html',
                 'last_updated_at',
             ])
             ->withTimestamps();

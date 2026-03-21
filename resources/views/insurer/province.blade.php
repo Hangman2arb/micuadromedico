@@ -193,6 +193,19 @@
             </section>
             @endif
 
+            {{-- Editorial content (AI-generated, province-specific) --}}
+            @if($pivotData?->content_html)
+            <section class="mb-12">
+                <h2 class="text-xl lg:text-2xl font-bold text-ink mb-5 flex items-center gap-2.5">
+                    <i class="fa-solid fa-circle-info text-primary text-lg"></i>
+                    {{ $insurer->name }} en {{ $province->name }}
+                </h2>
+                <div class="bg-white rounded-xl border border-gray-200 p-6 lg:p-8 prose prose-gray max-w-none prose-headings:text-ink prose-a:text-primary">
+                    {!! $pivotData->content_html !!}
+                </div>
+            </section>
+            @endif
+
             {{-- FAQ --}}
             @if(isset($faqs) && count($faqs) > 0)
                 @include('components.faq-accordion', [
