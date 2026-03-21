@@ -84,16 +84,26 @@ class InsurerController extends Controller
 
         $pivotData = $insurerProvince?->pivot;
 
-        // Load FAQs for the insurer
-        $insurer->load([
-            'faqs' => fn ($query) => $query->orderBy('sort_order'),
-        ]);
+        // Province-specific FAQs (preferred) or insurer general FAQs (fallback)
+        $provinceFaqs = $pivotData?->province_faqs ?? [];
+        if (is_string($provinceFaqs)) {
+            $provinceFaqs = json_decode($provinceFaqs, true) ?? [];
+        }
 
-        // Convert FAQs to array format
-        $faqs = $insurer->faqs->map(fn ($f) => [
-            'question' => $f->question,
-            'answer' => $f->answer,
-        ])->toArray();
+        if (! empty($provinceFaqs)) {
+            // Use province-specific FAQs (format: [{"q": "...", "a": "..."}])
+            $faqs = collect($provinceFaqs)->map(fn ($f) => [
+                'question' => $f['q'] ?? $f['question'] ?? '',
+                'answer' => $f['a'] ?? $f['answer'] ?? '',
+            ])->filter(fn ($f) => ! empty($f['question']))->values()->toArray();
+        } else {
+            // Fallback to insurer general FAQs
+            $insurer->load(['faqs' => fn ($query) => $query->orderBy('sort_order')]);
+            $faqs = $insurer->faqs->map(fn ($f) => [
+                'question' => $f->question,
+                'answer' => $f->answer,
+            ])->toArray();
+        }
 
         // PDF URL from pivot data
         $pdfUrl = $pivotData?->pdf_url;

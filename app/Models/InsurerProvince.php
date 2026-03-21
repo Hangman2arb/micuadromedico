@@ -20,6 +20,7 @@ class InsurerProvince extends Pivot
         'specialties_available',
         'meta_title',
         'meta_description',
+        'province_faqs',
         'last_updated_at',
     ];
 
@@ -28,6 +29,7 @@ class InsurerProvince extends Pivot
         return [
             'localities_covered' => 'array',
             'specialties_available' => 'array',
+            'province_faqs' => 'array',
             'last_updated_at' => 'datetime',
         ];
     }
