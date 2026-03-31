@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Insurer;
 use App\Models\SpecialGroup;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        URL::forceRootUrl('https://micuadromedico.es');
+        URL::forceScheme('https');
+
         // Share navigation data with all views
         View::composer('*', function ($view) {
             // Avoid recursive calls and only share if not already set
