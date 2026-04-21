@@ -131,6 +131,88 @@
     </div>
 </section>
 
+{{-- Browse by province (SEO hub → spokes) --}}
+@if(isset($provincesByRegion) && $provincesByRegion->count() > 0)
+<section class="bg-white border-t border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div class="flex items-end justify-between mb-8 flex-wrap gap-4">
+            <div>
+                <div class="inline-flex items-center gap-2 bg-primary/5 rounded-full px-4 py-1.5 mb-3">
+                    <i class="fa-solid fa-map-location-dot text-primary text-sm"></i>
+                    <span class="text-primary text-xs font-semibold uppercase tracking-wider">Por provincia</span>
+                </div>
+                <h2 class="text-2xl lg:text-3xl font-bold text-ink">
+                    Cuadros médicos por provincia
+                </h2>
+                <p class="text-gray-500 mt-2 max-w-xl">
+                    Encuentra los cuadros médicos de todas las aseguradoras disponibles en tu provincia.
+                </p>
+            </div>
+            <a href="{{ url('/provincias') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+                Ver todas las provincias
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+            @foreach($provincesByRegion as $region => $provinces)
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2.5">{{ $region }}</h3>
+                <ul class="space-y-1">
+                    @foreach($provinces as $p)
+                    <li>
+                        <a href="{{ url('/provincias/' . $p->slug) }}"
+                           class="inline-flex items-center gap-1.5 text-sm text-gray-700 hover:text-primary transition-colors py-0.5">
+                            <i class="fa-solid fa-chevron-right text-[9px] text-gray-300"></i>
+                            {{ $p->name }}
+                        </a>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+{{-- Browse by specialty (SEO hub → spokes) --}}
+@if(isset($topSpecialties) && $topSpecialties->count() > 0)
+<section class="bg-bg border-t border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div class="flex items-end justify-between mb-8 flex-wrap gap-4">
+            <div>
+                <div class="inline-flex items-center gap-2 bg-primary/5 rounded-full px-4 py-1.5 mb-3">
+                    <i class="fa-solid fa-user-doctor text-primary text-sm"></i>
+                    <span class="text-primary text-xs font-semibold uppercase tracking-wider">Por especialidad</span>
+                </div>
+                <h2 class="text-2xl lg:text-3xl font-bold text-ink">
+                    Aseguradoras por especialidad médica
+                </h2>
+                <p class="text-gray-500 mt-2 max-w-xl">
+                    Consulta qué aseguradoras incluyen cada especialidad en su cuadro médico.
+                </p>
+            </div>
+            <a href="{{ url('/especialidades') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+                Ver todas las especialidades
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+            @foreach($topSpecialties as $s)
+            <a href="{{ route('specialty.show', $s->slug) }}"
+               class="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-sm text-gray-700 rounded-xl border border-gray-200 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-colors"
+               title="Aseguradoras con {{ $s->name }}">
+                <i class="fa-solid fa-stethoscope text-[11px] text-primary/60"></i>
+                {{ $s->name }}
+            </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
 {{-- Funcionarios section --}}
 @if(Route::has('special-group.show'))
 <section class="bg-white border-y border-gray-100">

@@ -129,19 +129,22 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     @foreach($specialties as $specialty)
-                    <div class="specialty-item bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3.5 hover:border-primary/20 hover:shadow-sm transition-all"
-                         x-show="!filter || '{{ mb_strtolower($specialty->name) }}'.includes(filter.toLowerCase())"
-                         data-name="{{ mb_strtolower($specialty->name) }}">
+                    <a href="{{ route('specialty.show', $specialty->slug) }}"
+                       class="specialty-item group bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3.5 hover:border-primary/40 hover:shadow-sm transition-all"
+                       x-show="!filter || '{{ mb_strtolower($specialty->name) }}'.includes(filter.toLowerCase())"
+                       data-name="{{ mb_strtolower($specialty->name) }}"
+                       title="Ver aseguradoras con {{ $specialty->name }}">
                         <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background-color: {{ $color }}15;">
                             <i class="fa-solid fa-stethoscope text-sm" style="color: {{ $color }}"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h3 class="font-semibold text-ink text-sm truncate">{{ $specialty->name }}</h3>
+                            <h3 class="font-semibold text-ink text-sm truncate group-hover:text-primary transition-colors">{{ $specialty->name }}</h3>
                             @if($specialty->count ?? false)
                                 <p class="text-xs text-gray-400 mt-0.5">{{ $specialty->count }} profesionales</p>
                             @endif
                         </div>
-                    </div>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-gray-300 group-hover:text-primary transition-colors"></i>
+                    </a>
                     @endforeach
                 </div>
             </section>
@@ -230,6 +233,49 @@
                         ],
                     ]
                 ])
+            @endif
+
+            {{-- Other insurers in this province (hub-spoke cross-linking for SEO) --}}
+            @if(isset($otherInsurersInProvince) && $otherInsurersInProvince->count() > 0)
+            <section id="otras-aseguradoras" class="mt-12">
+                <h2 class="text-xl lg:text-2xl font-bold text-ink mb-5 flex items-center gap-2.5">
+                    <i class="fa-solid fa-hospital text-primary text-lg"></i>
+                    Otras aseguradoras en {{ $province->name }}
+                </h2>
+                <p class="text-sm text-gray-500 mb-5">
+                    Compara el cuadro médico de {{ $insurer->name }} con otras aseguradoras disponibles en {{ $province->name }}.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    @foreach($otherInsurersInProvince as $oi)
+                    @php
+                        $oiColor = $oi->brand_color ?? '#1d5fa7';
+                        $oiInitial = mb_strtoupper(mb_substr($oi->name, 0, 1));
+                    @endphp
+                    <a href="{{ route('insurer.province', [$oi->slug, $province->slug]) }}"
+                       class="group flex items-center gap-3 bg-white rounded-xl border border-gray-200 p-3.5 hover:border-primary/30 hover:shadow-sm transition-all"
+                       title="Cuadro médico {{ $oi->name }} en {{ $province->name }}">
+                        @if($oi->logo)
+                            <img src="{{ asset($oi->logo) }}" alt="Logo {{ $oi->name }}"
+                                 class="w-10 h-10 rounded-lg object-contain bg-white border border-gray-100 p-1 shrink-0"
+                                 width="40" height="40" loading="lazy">
+                        @else
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-bold shrink-0" style="background-color: {{ $oiColor }}">{{ $oiInitial }}</div>
+                        @endif
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-semibold text-ink text-sm truncate group-hover:text-primary transition-colors">{{ $oi->name }}</h3>
+                            <p class="text-xs text-gray-400 mt-0.5 truncate">en {{ $province->name }}</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-gray-300 group-hover:text-primary transition-colors shrink-0"></i>
+                    </a>
+                    @endforeach
+                </div>
+                <div class="mt-5 text-center">
+                    <a href="{{ url('/provincias/' . $province->slug) }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+                        Ver todas las aseguradoras en {{ $province->name }}
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </section>
             @endif
 
             {{-- CTA --}}

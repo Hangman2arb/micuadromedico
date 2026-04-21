@@ -105,7 +105,7 @@
                 </div>
             </section>
 
-            {{-- Specialties available --}}
+            {{-- Specialties available (linked to /especialidades/{slug} for SEO cross-linking) --}}
             @if($specialties->count() > 0)
             <section class="mb-12">
                 <h2 class="text-xl lg:text-2xl font-bold text-ink mb-5 flex items-center gap-2.5">
@@ -115,9 +115,44 @@
                 <div class="bg-white rounded-xl border border-gray-200 p-6">
                     <div class="flex flex-wrap gap-2">
                         @foreach($specialties as $spec)
-                        <span class="inline-flex items-center px-3 py-1.5 bg-gray-50 text-sm text-gray-600 rounded-lg border border-gray-100">
-                            {{ $spec }}
-                        </span>
+                        @php
+                            // Support both Specialty objects (with slug) and plain strings (fallback)
+                            $specName = is_object($spec) ? $spec->name : $spec;
+                            $specSlug = is_object($spec) ? ($spec->slug ?? null) : null;
+                        @endphp
+                        @if($specSlug)
+                            <a href="{{ route('specialty.show', $specSlug) }}"
+                               class="inline-flex items-center px-3 py-1.5 bg-gray-50 text-sm text-gray-700 rounded-lg border border-gray-100 hover:bg-primary/5 hover:text-primary hover:border-primary/20 transition-colors"
+                               title="Aseguradoras con {{ $specName }}">
+                                {{ $specName }}
+                            </a>
+                        @else
+                            <span class="inline-flex items-center px-3 py-1.5 bg-gray-50 text-sm text-gray-600 rounded-lg border border-gray-100">
+                                {{ $specName }}
+                            </span>
+                        @endif
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+            @endif
+
+            {{-- Nearby provinces (same region) for lateral discovery --}}
+            @if(isset($nearbyProvinces) && $nearbyProvinces->count() > 0)
+            <section class="mb-12">
+                <h2 class="text-xl lg:text-2xl font-bold text-ink mb-5 flex items-center gap-2.5">
+                    <i class="fa-solid fa-map-location-dot text-primary text-lg"></i>
+                    Otras provincias en {{ $province->autonomous_community }}
+                </h2>
+                <div class="bg-white rounded-xl border border-gray-200 p-6">
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($nearbyProvinces as $np)
+                        <a href="{{ url('/provincias/' . $np->slug) }}"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-sm text-gray-700 rounded-lg border border-gray-100 hover:bg-primary/5 hover:text-primary hover:border-primary/20 transition-colors"
+                           title="Cuadros médicos en {{ $np->name }}">
+                            <i class="fa-solid fa-map-pin text-[10px] text-gray-400"></i>
+                            {{ $np->name }}
+                        </a>
                         @endforeach
                     </div>
                 </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Province;
 use App\Models\Insurer;
+use App\Models\Specialty;
 use Illuminate\View\View;
 
 class ProvinceController extends Controller
@@ -40,7 +41,19 @@ class ProvinceController extends Controller
             if (is_string($specs)) $specs = json_decode($specs, true) ?? [];
             $allSpecialties = $allSpecialties->merge($specs);
         }
-        $specialties = $allSpecialties->unique()->sort()->values();
+        $specialtyNames = $allSpecialties->unique()->sort()->values();
+
+        // Resolve to Specialty objects so the view can link to /especialidades/{slug}
+        $specialties = Specialty::whereIn('name', $specialtyNames->all())
+            ->orderBy('category')
+            ->orderBy('name')
+            ->get();
+
+        // Nearby provinces (same autonomous community) for sibling linking
+        $nearbyProvinces = Province::where('autonomous_community', $province->autonomous_community)
+            ->where('id', '!=', $province->id)
+            ->orderBy('name')
+            ->get();
 
         $year = date('Y');
 
@@ -48,6 +61,7 @@ class ProvinceController extends Controller
             'province' => $province,
             'insurers' => $insurersWithPivot,
             'specialties' => $specialties,
+            'nearbyProvinces' => $nearbyProvinces,
             'metaTitle' => "Cuadros Médicos en {$province->name} {$year} — Todas las Aseguradoras",
             'metaDescription' => "Consulta los cuadros médicos de todas las aseguradoras en {$province->name}. Compara {$insurersWithPivot->count()} aseguradoras, especialidades y centros médicos en {$province->name}.",
             'canonicalUrl' => url("/provincias/{$province->slug}"),

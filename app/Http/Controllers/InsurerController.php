@@ -133,6 +133,14 @@ class InsurerController extends Controller
         // Other provinces for sidebar
         $otherProvinces = Province::orderBy('name')->get();
 
+        // Other insurers that also operate in this province (for cross-linking / hub-spoke SEO)
+        $otherInsurersInProvince = $province->insurers()
+            ->where('is_active', true)
+            ->where('insurers.id', '!=', $insurer->id)
+            ->orderBy('sort_order')
+            ->orderBy('insurers.name')
+            ->get();
+
         $metaTitle = $pivotData?->meta_title
             ?? "Cuadro Médico {$insurer->name} en {$province->name}";
         $metaDescription = $pivotData?->meta_description
@@ -149,6 +157,7 @@ class InsurerController extends Controller
             'faqs' => $faqs,
             'otherProvinces' => $otherProvinces,
             'insurerProvinces' => $otherProvinces,
+            'otherInsurersInProvince' => $otherInsurersInProvince,
             'metaTitle' => $metaTitle,
             'metaDescription' => $metaDescription,
             'canonicalUrl' => route('insurer.province', [$insurer->slug, $province->slug]),
