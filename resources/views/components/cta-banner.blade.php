@@ -4,9 +4,12 @@
 --}}
 @php
     $name = $insurer_name ?? null;
-    $utm = 'utm_source=micuadromedico&utm_medium=cta';
+    $utm_compare = 'utm_source=micuadromedico&utm_medium=cta&utm_campaign=compare';
+    $utm_quiz = 'utm_source=micuadromedico&utm_medium=cta&utm_campaign=quiz';
     if ($name) {
-        $utm .= '&utm_content=' . Str::slug($name);
+        $slug = Str::slug($name);
+        $utm_compare .= '&utm_content=' . $slug;
+        $utm_quiz .= '&utm_content=' . $slug;
     }
 @endphp
 
@@ -29,23 +32,30 @@
                     @if($name)
                         ¿Quieres contratar {{ $name }}?
                     @else
-                        ¿No tienes seguro de salud?
+                        ¿No tienes seguro de salud o quieres cambiar?
                     @endif
                 </h2>
 
                 <p class="text-blue-100 text-base sm:text-lg mb-8 max-w-xl mx-auto leading-relaxed">
                     @if($name)
-                        Compara precios y coberturas de {{ $name }} con otras aseguradoras. Encuentra el mejor seguro de salud para ti.
+                        Compara precios y coberturas de {{ $name }} con otras aseguradoras, o haz nuestro test si aún no sabes qué encaja contigo.
                     @else
-                        Compara precios y coberturas de las principales aseguradoras de salud en Espa&ntilde;a. Encuentra la póliza perfecta para ti y tu familia.
+                        Compara precios y coberturas de las principales aseguradoras, o descubre el seguro que mejor encaja contigo con nuestro test gratuito de 2 minutos.
                     @endif
                 </p>
 
-                <a href="https://tupolizadesalud.com/comparador-seguros/?{{ $utm }}" target="_blank" rel="noopener"
-                   class="inline-flex items-center gap-2.5 px-7 py-3.5 bg-accent hover:bg-accent-dark text-white font-bold rounded-xl shadow-lg shadow-black/20 hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5">
-                    Comparar seguros de salud
-                    <i class="fa-solid fa-arrow-right text-sm"></i>
-                </a>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <a href="https://tupolizadesalud.com/que-seguro-necesitas/?{{ $utm_quiz }}" target="_blank" rel="noopener"
+                       class="inline-flex items-center gap-2.5 px-7 py-3.5 bg-accent hover:bg-accent-dark text-white font-bold rounded-xl shadow-lg shadow-black/20 hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 w-full sm:w-auto justify-center">
+                        <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                        Hacer el test (2 min)
+                    </a>
+                    <a href="https://tupolizadesalud.com/comparador-seguros/?{{ $utm_compare }}" target="_blank" rel="noopener"
+                       class="inline-flex items-center gap-2.5 px-7 py-3.5 bg-white/15 hover:bg-white/25 text-white font-semibold rounded-xl border border-white/30 transition-all duration-200 hover:-translate-y-0.5 w-full sm:w-auto justify-center">
+                        Comparar precios
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </a>
+                </div>
 
                 <p class="text-blue-200/60 text-xs mt-5">
                     <i class="fa-solid fa-lock mr-1"></i>
