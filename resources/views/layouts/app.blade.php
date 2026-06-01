@@ -7,7 +7,7 @@
 
     <title>@yield('title', 'Cuadros Médicos de España 2026 — Mi Cuadro Médico')</title>
     <meta name="description" content="@yield('meta_description', 'Consulta el cuadro médico de tu aseguradora actualizado. Encuentra médicos, especialistas y centros de salud por provincia en toda España.')">
-    <link rel="canonical" href="@yield('canonical', url()->current())">
+    <link rel="canonical" href="@yield('canonical', $canonicalUrl ?? url()->current())">
 
     {{-- Open Graph --}}
     <meta property="og:type" content="website">
@@ -15,7 +15,7 @@
     <meta property="og:site_name" content="Mi Cuadro Médico">
     <meta property="og:title" content="@yield('og_title', 'Cuadros Médicos de España 2026 — Mi Cuadro Médico')">
     <meta property="og:description" content="@yield('og_description', 'Consulta el cuadro médico de tu aseguradora actualizado. Encuentra médicos, especialistas y centros de salud por provincia.')">
-    <meta property="og:url" content="@yield('canonical', url()->current())">
+    <meta property="og:url" content="@yield('canonical', $canonicalUrl ?? url()->current())">
     <meta property="og:image" content="@yield('og_image', asset('images/og-default.jpg'))">
 
     {{-- Twitter Card --}}
